@@ -1,0 +1,27 @@
+#container {
+    
+}
+table {
+    border: solid black 1px;
+    background-color: #573a35;
+}
+
+#result {
+    width: 100%;
+    font-size: 5vw;
+    background-color: lightgray;
+    display: inline-block;
+    height: 1.1em;
+}
+button {
+    width: 100px;
+    height: 100px;
+    font-size: x-large;
+    border-radius: 50%;
+    border: solid black 1px;
+    background-color: #c29f76;
+}
+
+button:hover {
+    border: solid black 2.5px;
+}
