@@ -4,7 +4,8 @@ let opsBtns = document.querySelectorAll(".operator");
 let equals = document.querySelector("#equal");
 let clearBtn = document.querySelector("#clear");
 let changeSign = document.querySelector("#changeSign");
-let num1 = '0';
+let delBtn = document.querySelector("#del");
+let num1 = '';
 let num2 = '';
 let total = 0;
 let operatorSign = '';
@@ -48,7 +49,7 @@ function operate(operator, x, y) {
 }
 
 function clear(type) {
-    num1 = '0';
+    num1 = '';
     num2 = '';
     operatorSign = '';
     wasEval = false;
@@ -68,11 +69,12 @@ function numbers(nums) {
             clear(1);
         }
     }
-    resultDisp.innerText += nums.target.innerText;
-    if(operatorSign) {
+    if(operatorSign && num2.length < 7) {
+        resultDisp.innerText += nums.target.innerText;
         num2 += nums.target.innerText;
     }
-    else {
+    else if(num1.length < 7) {
+        resultDisp.innerText += nums.target.innerText;
         num1 += nums.target.innerText;
     }
     
@@ -80,6 +82,10 @@ function numbers(nums) {
 
 function change(number) {
     return (parseFloat(number) * -1).toString();
+}
+
+function backspace(string) {
+    return string.slice(0, -1);
 }
 
 changeSign.addEventListener("click", () => {
@@ -96,6 +102,17 @@ changeSign.addEventListener("click", () => {
 //Clear button, calls the clear function
 clearBtn.addEventListener('click', () => clear(1));
 
+delBtn.addEventListener('click', () => {
+    let temp = backspace(resultDisp.innerText);
+    resultDisp.innerText = temp;
+    if(operatorSign) {
+        num2 = temp;
+    }
+    else {
+        num1 = temp;
+    }
+})
+
 //Number buttons, calls numbers function
 numBtns.forEach(btn => {
     btn.addEventListener('click', (e) => numbers(e))
@@ -105,6 +122,10 @@ numBtns.forEach(btn => {
 opsBtns.forEach(btn => btn.addEventListener('click', function(e) {
     if(e.target.innerText == '=') {
         total = operate(operatorSign, num1, num2)
+        if(total > 9999999) {
+            
+            total = total.toExponential(2);
+        }
         resultDisp.innerText = total;
         wasEval = true;
     }
@@ -118,6 +139,9 @@ opsBtns.forEach(btn => btn.addEventListener('click', function(e) {
         resultDisp.innerText = operatorSign
     }
     else {
+        if(!num1) {
+            num1 = 0;
+        }
         operatorSign =  e.target.innerText;
         resultDisp.innerText = operatorSign;
     }
