@@ -5,6 +5,7 @@ let equals = document.querySelector("#equal");
 let clearBtn = document.querySelector("#clear");
 let changeSign = document.querySelector("#changeSign");
 let delBtn = document.querySelector("#del");
+let decimalBtn = document.querySelector('#point');
 let num1 = '';
 let num2 = '';
 let total = 0;
@@ -30,7 +31,6 @@ function divide(x, y) {
 function operate(operator, x, y) {
     x = parseFloat(x);
     y = parseFloat(y);
-    console.log(x, y);
     switch (operator) {
         case '+':
             return add(x, y);
@@ -53,6 +53,7 @@ function clear(type) {
     num2 = '';
     operatorSign = '';
     wasEval = false;
+    decimalBtn.removeAttribute('disabled');
     if(type == 0) {
         //Used to clear everything but keeps the display
         return true;
@@ -68,6 +69,9 @@ function numbers(nums) {
         if(wasEval) { //if equation was just evaluated, clear everything when picking new numbers
             clear(1);
         }
+    }
+    if(nums.target.innerText == '.') {
+        decimalBtn.setAttribute('disabled', true);
     }
     if(operatorSign && num2.length < 7) {
         resultDisp.innerText += nums.target.innerText;
@@ -85,7 +89,11 @@ function change(number) {
 }
 
 function backspace(string) {
-    return string.slice(0, -1);
+    let temp = string.slice(0, -1);
+    if(!temp.includes(".")) {
+        decimalBtn.removeAttribute('disabled');
+    }
+    return temp;
 }
 
 changeSign.addEventListener("click", () => {
@@ -120,15 +128,17 @@ numBtns.forEach(btn => {
 
 //Operations buttons and evaluation logic
 opsBtns.forEach(btn => btn.addEventListener('click', function(e) {
+    decimalBtn.removeAttribute('disabled');
     if(e.target.innerText == '=') {
         total = operate(operatorSign, num1, num2)
-        if(total > 9999999) {
+        if(total.toString().length > 7) {
             
             total = total.toExponential(2);
         }
         resultDisp.innerText = total;
         wasEval = true;
     }
+
     //If equation was evaluated, this keeps the total saved so you can keep using it
     else if(wasEval == true) {
         operatorSign =  e.target.innerText;
@@ -138,6 +148,7 @@ opsBtns.forEach(btn => btn.addEventListener('click', function(e) {
         wasEval = false;operatorSign =  e.target.innerText;
         resultDisp.innerText = operatorSign
     }
+
     else {
         if(!num1) {
             num1 = 0;
